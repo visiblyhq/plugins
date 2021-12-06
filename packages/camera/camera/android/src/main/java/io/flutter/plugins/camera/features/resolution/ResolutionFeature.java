@@ -140,6 +140,7 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
    * @return The best possible {@link android.media.CamcorderProfile} that matches the supplied
    *     {@link ResolutionPreset}.
    */
+  @SuppressWarnings("deprecation")
   public static CamcorderProfile getBestAvailableCamcorderProfileForResolutionPresetLegacy(
       int cameraId, ResolutionPreset preset) {
     if (cameraId < 0) {
@@ -151,37 +152,30 @@ public class ResolutionFeature extends CameraFeature<ResolutionPreset> {
         // All of these cases deliberately fall through to get the best available profile.
       case max:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_HIGH)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HIGH);
         }
       case ultraHigh:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_2160P)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_2160P);
         }
       case veryHigh:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_1080P)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_1080P);
         }
       case high:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_720P)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_720P);
         }
       case medium:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_480P)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_480P);
         }
       case low:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_QVGA)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_QVGA);
         }
       default:
         if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_LOW)) {
-          @SuppressWarnings
           return CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_LOW);
         } else {
           throw new IllegalArgumentException(
