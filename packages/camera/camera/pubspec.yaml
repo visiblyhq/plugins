@@ -1,4 +1,4 @@
-name: visibly_camera_aac
+name: camera
 description: A Flutter plugin for controlling the camera. Supports previewing
   the camera feed, capturing images and video, and streaming image buffers to
   Dart.
