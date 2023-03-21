@@ -1,3 +1,30 @@
+## NEXT
+
+* Updates minimum Flutter version to 3.0.
+
+## 2.1.3
+
+* Updates code for stricter lint checks.
+
+## 2.1.2
+
+* Updates code for stricter lint checks.
+* Updates code for `no_leading_underscores_for_local_identifiers` lint.
+* Updates minimum Flutter version to 2.10.
+
+## 2.1.1
+
+* Fixes library_private_types_in_public_api, sort_child_properties_last and use_key_in_widget_constructors
+  lint warnings.
+
+## 2.1.0
+
+* Deprecated `SharedPreferencesWindows.instance` in favor of `SharedPreferencesStorePlatform.instance`.
+
+## 2.0.4
+
+* Removes dependency on `meta`.
+
 ## 2.0.3
 
 * Removed obsolete `pluginClass: none` from pubpsec.

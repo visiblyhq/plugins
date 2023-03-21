@@ -7,13 +7,16 @@ import 'package:flutter/services.dart';
 import 'package:path_provider_linux/path_provider_linux.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 /// Sample app
 class MyApp extends StatefulWidget {
+  /// Default Constructor
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -38,29 +41,25 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       tempDirectory = await _provider.getTemporaryPath();
-    } on PlatformException catch (e, stackTrace) {
+    } on PlatformException {
       tempDirectory = 'Failed to get temp directory.';
-      print('$tempDirectory $e $stackTrace');
     }
     try {
       downloadsDirectory = await _provider.getDownloadsPath();
-    } on PlatformException catch (e, stackTrace) {
+    } on PlatformException {
       downloadsDirectory = 'Failed to get downloads directory.';
-      print('$downloadsDirectory $e $stackTrace');
     }
 
     try {
       documentsDirectory = await _provider.getApplicationDocumentsPath();
-    } on PlatformException catch (e, stackTrace) {
+    } on PlatformException {
       documentsDirectory = 'Failed to get documents directory.';
-      print('$documentsDirectory $e $stackTrace');
     }
 
     try {
       appSupportDirectory = await _provider.getApplicationSupportPath();
-    } on PlatformException catch (e, stackTrace) {
+    } on PlatformException {
       appSupportDirectory = 'Failed to get documents directory.';
-      print('$appSupportDirectory $e $stackTrace');
     }
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling

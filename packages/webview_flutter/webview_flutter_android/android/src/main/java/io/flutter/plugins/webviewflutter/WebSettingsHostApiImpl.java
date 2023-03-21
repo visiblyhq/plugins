@@ -45,12 +45,8 @@ public class WebSettingsHostApiImpl implements WebSettingsHostApi {
   @Override
   public void create(Long instanceId, Long webViewInstanceId) {
     final WebView webView = (WebView) instanceManager.getInstance(webViewInstanceId);
-    instanceManager.addInstance(webSettingsCreator.createWebSettings(webView), instanceId);
-  }
-
-  @Override
-  public void dispose(Long instanceId) {
-    instanceManager.removeInstanceWithId(instanceId);
+    instanceManager.addDartCreatedInstance(
+        webSettingsCreator.createWebSettings(webView), instanceId);
   }
 
   @Override
@@ -117,5 +113,11 @@ public class WebSettingsHostApiImpl implements WebSettingsHostApi {
   public void setBuiltInZoomControls(Long instanceId, Boolean enabled) {
     final WebSettings webSettings = (WebSettings) instanceManager.getInstance(instanceId);
     webSettings.setBuiltInZoomControls(enabled);
+  }
+
+  @Override
+  public void setAllowFileAccess(Long instanceId, Boolean enabled) {
+    final WebSettings webSettings = (WebSettings) instanceManager.getInstance(instanceId);
+    webSettings.setAllowFileAccess(enabled);
   }
 }
