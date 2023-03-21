@@ -7,7 +7,7 @@ import 'dart:convert' show json;
 
 import 'package:file/file.dart';
 import 'package:file/local.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart' show debugPrint, visibleForTesting;
 import 'package:path/path.dart' as path;
 import 'package:path_provider_windows/path_provider_windows.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
@@ -16,14 +16,14 @@ import 'package:shared_preferences_platform_interface/shared_preferences_platfor
 ///
 /// This class implements the `package:shared_preferences` functionality for Windows.
 class SharedPreferencesWindows extends SharedPreferencesStorePlatform {
-  /// The default instance of [SharedPreferencesWindows] to use.
-  // TODO(egarciad): Remove when the Dart plugin registrant lands on Flutter stable.
-  // https://github.com/flutter/flutter/issues/81421
+  /// Deprecated instance of [SharedPreferencesWindows].
+  /// Use [SharedPreferencesStorePlatform.instance] instead.
+  @Deprecated('Use `SharedPreferencesStorePlatform.instance` instead.')
   static SharedPreferencesWindows instance = SharedPreferencesWindows();
 
   /// Registers the Windows implementation.
   static void registerWith() {
-    SharedPreferencesStorePlatform.instance = instance;
+    SharedPreferencesStorePlatform.instance = SharedPreferencesWindows();
   }
 
   /// File system used to store to disk. Exposed for testing only.
@@ -80,7 +80,7 @@ class SharedPreferencesWindows extends SharedPreferencesStorePlatform {
     try {
       final File? localDataFile = await _getLocalDataFile();
       if (localDataFile == null) {
-        print('Unable to determine where to write preferences.');
+        debugPrint('Unable to determine where to write preferences.');
         return false;
       }
       if (!localDataFile.existsSync()) {
@@ -89,7 +89,7 @@ class SharedPreferencesWindows extends SharedPreferencesStorePlatform {
       final String stringMap = json.encode(preferences);
       localDataFile.writeAsStringSync(stringMap);
     } catch (e) {
-      print('Error saving preferences to disk: $e');
+      debugPrint('Error saving preferences to disk: $e');
       return false;
     }
     return true;

@@ -5,12 +5,15 @@
 import 'package:flutter/material.dart';
 import 'package:ios_platform_images/ios_platform_images.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 /// Main widget for the example app.
 class MyApp extends StatefulWidget {
+  /// Default Constructor
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -18,7 +21,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    IosPlatformImages.resolveURL("textfile").then((value) => print(value));
+    IosPlatformImages.resolveURL('textfile')
+        // ignore: avoid_print
+        .then((String? value) => print(value));
   }
 
   @override
@@ -31,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           // "flutter" is a resource in Assets.xcassets.
           child: Image(
-            image: IosPlatformImages.load("flutter"),
+            image: IosPlatformImages.load('flutter'),
             semanticLabel: 'Flutter logo',
           ),
         ),

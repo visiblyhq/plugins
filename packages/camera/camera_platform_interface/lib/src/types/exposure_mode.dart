@@ -18,17 +18,15 @@ String serializeExposureMode(ExposureMode exposureMode) {
       return 'locked';
     case ExposureMode.auto:
       return 'auto';
-    default:
-      throw ArgumentError('Unknown ExposureMode value');
   }
 }
 
 /// Returns the exposure mode for a given String.
 ExposureMode deserializeExposureMode(String str) {
   switch (str) {
-    case "locked":
+    case 'locked':
       return ExposureMode.locked;
-    case "auto":
+    case 'auto':
       return ExposureMode.auto;
     default:
       throw ArgumentError('"$str" is not a valid ExposureMode value');

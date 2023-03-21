@@ -26,8 +26,12 @@ void main() {
       FakePlatformViewsController();
 
   setUpAll(() {
-    SystemChannels.platform_views.setMockMethodCallHandler(
-        fakePlatformViewsController.fakePlatformViewsMethodHandler);
+    _ambiguate(TestDefaultBinaryMessengerBinding.instance)!
+        .defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          SystemChannels.platform_views,
+          fakePlatformViewsController.fakePlatformViewsMethodHandler,
+        );
   });
 
   setUp(() {
@@ -35,7 +39,7 @@ void main() {
   });
 
   testWidgets('Initializing a circle', (WidgetTester tester) async {
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
     await tester.pumpWidget(_mapWithCircles(<Circle>{c1}));
 
     final FakePlatformGoogleMap platformGoogleMap =
@@ -48,9 +52,9 @@ void main() {
     expect(platformGoogleMap.circlesToChange.isEmpty, true);
   });
 
-  testWidgets("Adding a circle", (WidgetTester tester) async {
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
-    final Circle c2 = Circle(circleId: CircleId("circle_2"));
+  testWidgets('Adding a circle', (WidgetTester tester) async {
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
+    const Circle c2 = Circle(circleId: CircleId('circle_2'));
 
     await tester.pumpWidget(_mapWithCircles(<Circle>{c1}));
     await tester.pumpWidget(_mapWithCircles(<Circle>{c1, c2}));
@@ -67,8 +71,8 @@ void main() {
     expect(platformGoogleMap.circlesToChange.isEmpty, true);
   });
 
-  testWidgets("Removing a circle", (WidgetTester tester) async {
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
+  testWidgets('Removing a circle', (WidgetTester tester) async {
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
 
     await tester.pumpWidget(_mapWithCircles(<Circle>{c1}));
     await tester.pumpWidget(_mapWithCircles(<Circle>{}));
@@ -82,9 +86,9 @@ void main() {
     expect(platformGoogleMap.circlesToAdd.isEmpty, true);
   });
 
-  testWidgets("Updating a circle", (WidgetTester tester) async {
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
-    final Circle c2 = Circle(circleId: CircleId("circle_1"), radius: 10);
+  testWidgets('Updating a circle', (WidgetTester tester) async {
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
+    const Circle c2 = Circle(circleId: CircleId('circle_1'), radius: 10);
 
     await tester.pumpWidget(_mapWithCircles(<Circle>{c1}));
     await tester.pumpWidget(_mapWithCircles(<Circle>{c2}));
@@ -98,9 +102,9 @@ void main() {
     expect(platformGoogleMap.circlesToAdd.isEmpty, true);
   });
 
-  testWidgets("Updating a circle", (WidgetTester tester) async {
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
-    final Circle c2 = Circle(circleId: CircleId("circle_1"), radius: 10);
+  testWidgets('Updating a circle', (WidgetTester tester) async {
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
+    const Circle c2 = Circle(circleId: CircleId('circle_1'), radius: 10);
 
     await tester.pumpWidget(_mapWithCircles(<Circle>{c1}));
     await tester.pumpWidget(_mapWithCircles(<Circle>{c2}));
@@ -114,12 +118,12 @@ void main() {
     expect(update.radius, 10);
   });
 
-  testWidgets("Multi Update", (WidgetTester tester) async {
-    Circle c1 = Circle(circleId: CircleId("circle_1"));
-    Circle c2 = Circle(circleId: CircleId("circle_2"));
+  testWidgets('Multi Update', (WidgetTester tester) async {
+    Circle c1 = const Circle(circleId: CircleId('circle_1'));
+    Circle c2 = const Circle(circleId: CircleId('circle_2'));
     final Set<Circle> prev = <Circle>{c1, c2};
-    c1 = Circle(circleId: CircleId("circle_1"), visible: false);
-    c2 = Circle(circleId: CircleId("circle_2"), radius: 10);
+    c1 = const Circle(circleId: CircleId('circle_1'), visible: false);
+    c2 = const Circle(circleId: CircleId('circle_2'), radius: 10);
     final Set<Circle> cur = <Circle>{c1, c2};
 
     await tester.pumpWidget(_mapWithCircles(prev));
@@ -133,14 +137,14 @@ void main() {
     expect(platformGoogleMap.circlesToAdd.isEmpty, true);
   });
 
-  testWidgets("Multi Update", (WidgetTester tester) async {
-    Circle c2 = Circle(circleId: CircleId("circle_2"));
-    final Circle c3 = Circle(circleId: CircleId("circle_3"));
+  testWidgets('Multi Update', (WidgetTester tester) async {
+    Circle c2 = const Circle(circleId: CircleId('circle_2'));
+    const Circle c3 = Circle(circleId: CircleId('circle_3'));
     final Set<Circle> prev = <Circle>{c2, c3};
 
     // c1 is added, c2 is updated, c3 is removed.
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
-    c2 = Circle(circleId: CircleId("circle_2"), radius: 10);
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
+    c2 = const Circle(circleId: CircleId('circle_2'), radius: 10);
     final Set<Circle> cur = <Circle>{c1, c2};
 
     await tester.pumpWidget(_mapWithCircles(prev));
@@ -158,12 +162,12 @@ void main() {
     expect(platformGoogleMap.circleIdsToRemove.first, equals(c3.circleId));
   });
 
-  testWidgets("Partial Update", (WidgetTester tester) async {
-    final Circle c1 = Circle(circleId: CircleId("circle_1"));
-    final Circle c2 = Circle(circleId: CircleId("circle_2"));
-    Circle c3 = Circle(circleId: CircleId("circle_3"));
+  testWidgets('Partial Update', (WidgetTester tester) async {
+    const Circle c1 = Circle(circleId: CircleId('circle_1'));
+    const Circle c2 = Circle(circleId: CircleId('circle_2'));
+    Circle c3 = const Circle(circleId: CircleId('circle_3'));
     final Set<Circle> prev = <Circle>{c1, c2, c3};
-    c3 = Circle(circleId: CircleId("circle_3"), radius: 10);
+    c3 = const Circle(circleId: CircleId('circle_3'), radius: 10);
     final Set<Circle> cur = <Circle>{c1, c2, c3};
 
     await tester.pumpWidget(_mapWithCircles(prev));
@@ -177,10 +181,10 @@ void main() {
     expect(platformGoogleMap.circlesToAdd.isEmpty, true);
   });
 
-  testWidgets("Update non platform related attr", (WidgetTester tester) async {
-    Circle c1 = Circle(circleId: CircleId("circle_1"));
+  testWidgets('Update non platform related attr', (WidgetTester tester) async {
+    Circle c1 = const Circle(circleId: CircleId('circle_1'));
     final Set<Circle> prev = <Circle>{c1};
-    c1 = Circle(circleId: CircleId("circle_1"), onTap: () => print("hello"));
+    c1 = Circle(circleId: const CircleId('circle_1'), onTap: () {});
     final Set<Circle> cur = <Circle>{c1};
 
     await tester.pumpWidget(_mapWithCircles(prev));
@@ -194,3 +198,9 @@ void main() {
     expect(platformGoogleMap.circlesToAdd.isEmpty, true);
   });
 }
+
+/// This allows a value of type T or T? to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become non-nullable can still be used
+/// with `!` and `?` on the stable branch.
+T? _ambiguate<T>(T? value) => value;

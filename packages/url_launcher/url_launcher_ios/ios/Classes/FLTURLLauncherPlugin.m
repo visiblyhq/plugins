@@ -6,7 +6,6 @@
 
 #import "FLTURLLauncherPlugin.h"
 
-API_AVAILABLE(ios(9.0))
 @interface FLTURLLaunchSession : NSObject <SFSafariViewControllerDelegate>
 
 @property(copy, nonatomic) FlutterResult flutterResult;
@@ -30,7 +29,7 @@ API_AVAILABLE(ios(9.0))
 }
 
 - (void)safariViewController:(SFSafariViewController *)controller
-      didCompleteInitialLoad:(BOOL)didLoadSuccessfully API_AVAILABLE(ios(9.0)) {
+      didCompleteInitialLoad:(BOOL)didLoadSuccessfully {
   if (didLoadSuccessfully) {
     self.flutterResult(@YES);
   } else {
@@ -41,7 +40,7 @@ API_AVAILABLE(ios(9.0))
   }
 }
 
-- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller API_AVAILABLE(ios(9.0)) {
+- (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
   [controller dismissViewControllerAnimated:YES completion:nil];
   self.didFinish();
 }
@@ -52,7 +51,6 @@ API_AVAILABLE(ios(9.0))
 
 @end
 
-API_AVAILABLE(ios(9.0))
 @interface FLTURLLauncherPlugin ()
 
 @property(strong, nonatomic) FLTURLLaunchSession *currentSession;
@@ -63,7 +61,7 @@ API_AVAILABLE(ios(9.0))
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
   FlutterMethodChannel *channel =
-      [FlutterMethodChannel methodChannelWithName:@"plugins.flutter.io/url_launcher"
+      [FlutterMethodChannel methodChannelWithName:@"plugins.flutter.io/url_launcher_ios"
                                   binaryMessenger:registrar.messenger];
   FLTURLLauncherPlugin *plugin = [[FLTURLLauncherPlugin alloc] init];
   [registrar addMethodCallDelegate:plugin channel:channel];
@@ -99,24 +97,16 @@ API_AVAILABLE(ios(9.0))
   NSURL *url = [NSURL URLWithString:urlString];
   UIApplication *application = [UIApplication sharedApplication];
 
-  if (@available(iOS 10.0, *)) {
-    NSNumber *universalLinksOnly = call.arguments[@"universalLinksOnly"] ?: @0;
-    NSDictionary *options = @{UIApplicationOpenURLOptionUniversalLinksOnly : universalLinksOnly};
-    [application openURL:url
-                  options:options
-        completionHandler:^(BOOL success) {
-          result(@(success));
-        }];
-  } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    BOOL success = [application openURL:url];
-#pragma clang diagnostic pop
-    result(@(success));
-  }
+  NSNumber *universalLinksOnly = call.arguments[@"universalLinksOnly"] ?: @0;
+  NSDictionary *options = @{UIApplicationOpenURLOptionUniversalLinksOnly : universalLinksOnly};
+  [application openURL:url
+                options:options
+      completionHandler:^(BOOL success) {
+        result(@(success));
+      }];
 }
 
-- (void)launchURLInVC:(NSString *)urlString result:(FlutterResult)result API_AVAILABLE(ios(9.0)) {
+- (void)launchURLInVC:(NSString *)urlString result:(FlutterResult)result {
   NSURL *url = [NSURL URLWithString:urlString];
   self.currentSession = [[FLTURLLaunchSession alloc] initWithUrl:url withFlutterResult:result];
   __weak typeof(self) weakSelf = self;
@@ -128,7 +118,7 @@ API_AVAILABLE(ios(9.0))
                                      completion:nil];
 }
 
-- (void)closeWebViewWithResult:(FlutterResult)result API_AVAILABLE(ios(9.0)) {
+- (void)closeWebViewWithResult:(FlutterResult)result {
   if (self.currentSession != nil) {
     [self.currentSession close];
   }
@@ -136,8 +126,13 @@ API_AVAILABLE(ios(9.0))
 }
 
 - (UIViewController *)topViewController {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  // TODO(stuartmorgan) Provide a non-deprecated codepath. See
+  // https://github.com/flutter/flutter/issues/104117
   return [self topViewControllerFromViewController:[UIApplication sharedApplication]
                                                        .keyWindow.rootViewController];
+#pragma clang diagnostic pop
 }
 
 /**

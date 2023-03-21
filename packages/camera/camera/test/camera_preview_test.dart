@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:quiver/core.dart';
 
 class FakeController extends ValueNotifier<CameraValue>
     implements CameraController {
@@ -23,7 +20,7 @@ class FakeController extends ValueNotifier<CameraValue>
 
   @override
   Widget buildPreview() {
-    return Texture(textureId: CameraController.kUninitializedCameraId);
+    return const Texture(textureId: CameraController.kUninitializedCameraId);
   }
 
   @override
@@ -33,7 +30,7 @@ class FakeController extends ValueNotifier<CameraValue>
   void debugCheckIsDisposed() {}
 
   @override
-  CameraDescription get description => CameraDescription(
+  CameraDescription get description => const CameraDescription(
       name: '', lensDirection: CameraLensDirection.back, sensorOrientation: 0);
 
   @override
@@ -97,10 +94,11 @@ class FakeController extends ValueNotifier<CameraValue>
   Future<void> setZoomLevel(double zoom) async {}
 
   @override
-  Future<void> startImageStream(onAvailable) async {}
+  Future<void> startImageStream(onLatestImageAvailable onAvailable) async {}
 
   @override
-  Future<void> startVideoRecording() async {}
+  Future<void> startVideoRecording(
+      {onLatestImageAvailable? onAvailable}) async {}
 
   @override
   Future<void> stopImageStream() async {}
@@ -136,10 +134,11 @@ void main() {
         isRecordingVideo: true,
         deviceOrientation: DeviceOrientation.portraitUp,
         lockedCaptureOrientation:
-            Optional.fromNullable(DeviceOrientation.landscapeRight),
-        recordingOrientation:
-            Optional.fromNullable(DeviceOrientation.landscapeLeft),
-        previewSize: Size(480, 640),
+            const Optional<DeviceOrientation>.fromNullable(
+                DeviceOrientation.landscapeRight),
+        recordingOrientation: const Optional<DeviceOrientation>.fromNullable(
+            DeviceOrientation.landscapeLeft),
+        previewSize: const Size(480, 640),
       );
 
       await tester.pumpWidget(
@@ -150,7 +149,7 @@ void main() {
       );
       expect(find.byType(RotatedBox), findsOneWidget);
 
-      RotatedBox rotatedBox =
+      final RotatedBox rotatedBox =
           tester.widget<RotatedBox>(find.byType(RotatedBox));
       expect(rotatedBox.quarterTurns, 3);
 
@@ -169,10 +168,11 @@ void main() {
         isInitialized: true,
         deviceOrientation: DeviceOrientation.portraitUp,
         lockedCaptureOrientation:
-            Optional.fromNullable(DeviceOrientation.landscapeRight),
-        recordingOrientation:
-            Optional.fromNullable(DeviceOrientation.landscapeLeft),
-        previewSize: Size(480, 640),
+            const Optional<DeviceOrientation>.fromNullable(
+                DeviceOrientation.landscapeRight),
+        recordingOrientation: const Optional<DeviceOrientation>.fromNullable(
+            DeviceOrientation.landscapeLeft),
+        previewSize: const Size(480, 640),
       );
 
       await tester.pumpWidget(
@@ -183,7 +183,7 @@ void main() {
       );
       expect(find.byType(RotatedBox), findsOneWidget);
 
-      RotatedBox rotatedBox =
+      final RotatedBox rotatedBox =
           tester.widget<RotatedBox>(find.byType(RotatedBox));
       expect(rotatedBox.quarterTurns, 1);
 
@@ -201,10 +201,9 @@ void main() {
       controller.value = controller.value.copyWith(
         isInitialized: true,
         deviceOrientation: DeviceOrientation.portraitUp,
-        lockedCaptureOrientation: null,
-        recordingOrientation:
-            Optional.fromNullable(DeviceOrientation.landscapeLeft),
-        previewSize: Size(480, 640),
+        recordingOrientation: const Optional<DeviceOrientation>.fromNullable(
+            DeviceOrientation.landscapeLeft),
+        previewSize: const Size(480, 640),
       );
 
       await tester.pumpWidget(
@@ -215,7 +214,7 @@ void main() {
       );
       expect(find.byType(RotatedBox), findsOneWidget);
 
-      RotatedBox rotatedBox =
+      final RotatedBox rotatedBox =
           tester.widget<RotatedBox>(find.byType(RotatedBox));
       expect(rotatedBox.quarterTurns, 0);
 
@@ -229,7 +228,7 @@ void main() {
     final FakeController controller = FakeController();
     controller.value = controller.value.copyWith(
       isInitialized: true,
-      previewSize: Size(480, 640),
+      previewSize: const Size(480, 640),
     );
 
     await tester.pumpWidget(

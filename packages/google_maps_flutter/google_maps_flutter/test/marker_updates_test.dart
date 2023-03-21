@@ -26,8 +26,12 @@ void main() {
       FakePlatformViewsController();
 
   setUpAll(() {
-    SystemChannels.platform_views.setMockMethodCallHandler(
-        fakePlatformViewsController.fakePlatformViewsMethodHandler);
+    _ambiguate(TestDefaultBinaryMessengerBinding.instance)!
+        .defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          SystemChannels.platform_views,
+          fakePlatformViewsController.fakePlatformViewsMethodHandler,
+        );
   });
 
   setUp(() {
@@ -35,7 +39,7 @@ void main() {
   });
 
   testWidgets('Initializing a marker', (WidgetTester tester) async {
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m1}));
 
     final FakePlatformGoogleMap platformGoogleMap =
@@ -48,9 +52,9 @@ void main() {
     expect(platformGoogleMap.markersToChange.isEmpty, true);
   });
 
-  testWidgets("Adding a marker", (WidgetTester tester) async {
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
-    final Marker m2 = Marker(markerId: MarkerId("marker_2"));
+  testWidgets('Adding a marker', (WidgetTester tester) async {
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
+    const Marker m2 = Marker(markerId: MarkerId('marker_2'));
 
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m1}));
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m1, m2}));
@@ -67,8 +71,8 @@ void main() {
     expect(platformGoogleMap.markersToChange.isEmpty, true);
   });
 
-  testWidgets("Removing a marker", (WidgetTester tester) async {
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
+  testWidgets('Removing a marker', (WidgetTester tester) async {
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
 
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m1}));
     await tester.pumpWidget(_mapWithMarkers(<Marker>{}));
@@ -82,9 +86,9 @@ void main() {
     expect(platformGoogleMap.markersToAdd.isEmpty, true);
   });
 
-  testWidgets("Updating a marker", (WidgetTester tester) async {
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
-    final Marker m2 = Marker(markerId: MarkerId("marker_1"), alpha: 0.5);
+  testWidgets('Updating a marker', (WidgetTester tester) async {
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
+    const Marker m2 = Marker(markerId: MarkerId('marker_1'), alpha: 0.5);
 
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m1}));
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m2}));
@@ -98,11 +102,11 @@ void main() {
     expect(platformGoogleMap.markersToAdd.isEmpty, true);
   });
 
-  testWidgets("Updating a marker", (WidgetTester tester) async {
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
-    final Marker m2 = Marker(
-      markerId: MarkerId("marker_1"),
-      infoWindow: const InfoWindow(snippet: 'changed'),
+  testWidgets('Updating a marker', (WidgetTester tester) async {
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
+    const Marker m2 = Marker(
+      markerId: MarkerId('marker_1'),
+      infoWindow: InfoWindow(snippet: 'changed'),
     );
 
     await tester.pumpWidget(_mapWithMarkers(<Marker>{m1}));
@@ -117,12 +121,12 @@ void main() {
     expect(update.infoWindow.snippet, 'changed');
   });
 
-  testWidgets("Multi Update", (WidgetTester tester) async {
-    Marker m1 = Marker(markerId: MarkerId("marker_1"));
-    Marker m2 = Marker(markerId: MarkerId("marker_2"));
+  testWidgets('Multi Update', (WidgetTester tester) async {
+    Marker m1 = const Marker(markerId: MarkerId('marker_1'));
+    Marker m2 = const Marker(markerId: MarkerId('marker_2'));
     final Set<Marker> prev = <Marker>{m1, m2};
-    m1 = Marker(markerId: MarkerId("marker_1"), visible: false);
-    m2 = Marker(markerId: MarkerId("marker_2"), draggable: true);
+    m1 = const Marker(markerId: MarkerId('marker_1'), visible: false);
+    m2 = const Marker(markerId: MarkerId('marker_2'), draggable: true);
     final Set<Marker> cur = <Marker>{m1, m2};
 
     await tester.pumpWidget(_mapWithMarkers(prev));
@@ -136,14 +140,14 @@ void main() {
     expect(platformGoogleMap.markersToAdd.isEmpty, true);
   });
 
-  testWidgets("Multi Update", (WidgetTester tester) async {
-    Marker m2 = Marker(markerId: MarkerId("marker_2"));
-    final Marker m3 = Marker(markerId: MarkerId("marker_3"));
+  testWidgets('Multi Update', (WidgetTester tester) async {
+    Marker m2 = const Marker(markerId: MarkerId('marker_2'));
+    const Marker m3 = Marker(markerId: MarkerId('marker_3'));
     final Set<Marker> prev = <Marker>{m2, m3};
 
     // m1 is added, m2 is updated, m3 is removed.
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
-    m2 = Marker(markerId: MarkerId("marker_2"), draggable: true);
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
+    m2 = const Marker(markerId: MarkerId('marker_2'), draggable: true);
     final Set<Marker> cur = <Marker>{m1, m2};
 
     await tester.pumpWidget(_mapWithMarkers(prev));
@@ -161,12 +165,12 @@ void main() {
     expect(platformGoogleMap.markerIdsToRemove.first, equals(m3.markerId));
   });
 
-  testWidgets("Partial Update", (WidgetTester tester) async {
-    final Marker m1 = Marker(markerId: MarkerId("marker_1"));
-    final Marker m2 = Marker(markerId: MarkerId("marker_2"));
-    Marker m3 = Marker(markerId: MarkerId("marker_3"));
+  testWidgets('Partial Update', (WidgetTester tester) async {
+    const Marker m1 = Marker(markerId: MarkerId('marker_1'));
+    const Marker m2 = Marker(markerId: MarkerId('marker_2'));
+    Marker m3 = const Marker(markerId: MarkerId('marker_3'));
     final Set<Marker> prev = <Marker>{m1, m2, m3};
-    m3 = Marker(markerId: MarkerId("marker_3"), draggable: true);
+    m3 = const Marker(markerId: MarkerId('marker_3'), draggable: true);
     final Set<Marker> cur = <Marker>{m1, m2, m3};
 
     await tester.pumpWidget(_mapWithMarkers(prev));
@@ -180,13 +184,13 @@ void main() {
     expect(platformGoogleMap.markersToAdd.isEmpty, true);
   });
 
-  testWidgets("Update non platform related attr", (WidgetTester tester) async {
-    Marker m1 = Marker(markerId: MarkerId("marker_1"));
+  testWidgets('Update non platform related attr', (WidgetTester tester) async {
+    Marker m1 = const Marker(markerId: MarkerId('marker_1'));
     final Set<Marker> prev = <Marker>{m1};
     m1 = Marker(
-        markerId: MarkerId("marker_1"),
-        onTap: () => print("hello"),
-        onDragEnd: (LatLng latLng) => print(latLng));
+        markerId: const MarkerId('marker_1'),
+        onTap: () {},
+        onDragEnd: (LatLng latLng) {});
     final Set<Marker> cur = <Marker>{m1};
 
     await tester.pumpWidget(_mapWithMarkers(prev));
@@ -200,3 +204,9 @@ void main() {
     expect(platformGoogleMap.markersToAdd.isEmpty, true);
   });
 }
+
+/// This allows a value of type T or T? to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become non-nullable can still be used
+/// with `!` and `?` on the stable branch.
+T? _ambiguate<T>(T? value) => value;
